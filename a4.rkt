@@ -70,7 +70,7 @@ my-theorem: A theorem that you will prove.
 my-proof: A proof for my-theorem: (proof? my-proof my-theorem)
 should return true.
 |#
-(define my-proof (void))
+(define my-proof '(assume A (assume (B -> C))(modus-ponens (use B) (use (A -> C)))))
 
 (module+ test
   (test-equal? "my-proof proves my-theorem"
