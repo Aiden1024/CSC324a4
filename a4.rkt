@@ -70,7 +70,10 @@ my-theorem: A theorem that you will prove.
 my-proof: A proof for my-theorem: (proof? my-proof my-theorem)
 should return true.
 |#
-(define my-proof '(assume A (assume (B -> C))(modus-ponens (use B) (use (A -> C)))))
+;(define my-proof '(assume (A -> (B -> C)) (use (B -> (A -> C)))))
+(define my-proof '(assume (A -> assume (B -> C) assume B (use (B -> C)))
+                          (modus-ponens (use B)(use (B -> (A -> (modus-ponens (use B) (use (B -> C)))))))))
+
 
 (module+ test
   (test-equal? "my-proof proves my-theorem"
@@ -123,7 +126,7 @@ should return true.
   assumptions "assmpts".
 |#
 (define (proof-helpero prop proof assmpts)
-    (== #t #t) ; TODO REPLACE THIS!
+  
 )
 
 #|
