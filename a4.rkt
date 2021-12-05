@@ -126,12 +126,18 @@ should return true.
 ;Issue may be with assmpts -> Fixed: must add p to assmpts
 ; Should p be a list? No. Should prop-rest be a list? Yes
 
+;Only have relation on proof, must have relation on prop
+; 2 options for prop: ID or (Prop -> Prop)
+; Maybe try nested conde: Check if it is ID, then check proof is 'use. Check if it is (Prop -> Prop), then check proof is 'assume
+
 (define (proof-helpero prop proof assmpts)
   (fresh (hypo prop-rest subproof)
-    (conde ((== proof (list 'use hypo))
+    (conde ((== proof (list 'use hypo)) ; If prop looks a certain way, then membero
+           (== prop hypo)
            (membero hypo assmpts))
-           ((== proof (list 'assume hypo subproof))
-            (proof-helpero prop subproof (cons hypo assmpts)))
+           ((== proof (list 'assume hypo subproof)) ;If prop looks a certain way, then recurse
+            (== prop (list hypo '-> prop-rest))
+            (proof-helpero prop-rest subproof (cons hypo assmpts)))
      )
     )
 )
