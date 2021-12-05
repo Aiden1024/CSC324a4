@@ -47,10 +47,10 @@ Copyright: (c) University of Toronto Mississsauga
   or #f is the proof is invalid.
 |#
 (define/match (proof/asmpt proof asmpt)
-  [((list 'use p) asmpt)
-   (if (member p asmpt) p #f)]
-  [((list 'assume hypo subproof) asmpt)
-   (list hypo '-> (proof/asmpt subproof (cons hypo asmpt)))]
+  [((list 'use p) asmpt) ; '(use p) _ ; pattern matching
+   (if (member p asmpt) p #f)] ; if p exit in asmpt, e.g (p -> p), (p)
+  [((list 'assume hypo subproof) asmpt) ;'(assume hypo sub) _
+   (list hypo '-> (proof/asmpt subproof (cons hypo asmpt)))] ; return the '(p -> (recursive call))
   [((list 'modus-ponens subpf1 subpf2) asmpt)
    (let* ([prop2 (proof/asmpt subpf2 asmpt)])
      (match prop2            ; "match" is like "case ... of" in Haskell
