@@ -186,7 +186,14 @@ should return true.
 
   ; Write more tests here
 )
+#|
+test stuff
+(run 1 (x) (proof-helpero '(A -> A) x '()))
+'((assume _.0 (use _.0)))
+(run 1 (y) (proof-helpero y '(assume B (use B)) '()))
+?
 
+|#
 
 ;-------------------------------------------------------------------------------
 ; Task 3: A Theorem Prover
