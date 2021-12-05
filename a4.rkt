@@ -70,12 +70,12 @@ my-theorem: A theorem that you will prove.
 my-proof: A proof for my-theorem: (proof? my-proof my-theorem)
 should return true.
 |#
-(define my-proof '(assume (A -> (B -> C)) (assume B (assume A (modus-ponens (use A) (use (modus-ponens (use B) (use (modus-ponens (use A) (use (A -> (B -> C))))))))))))
-; '(assume (A -> (B -> C)) (assume B (assume A (modus-ponens (use A) (modus-ponens (use B) (use (B -> C)))))))
+(define my-proof '(assume (A -> (B -> C)) (assume B (assume A (modus-ponens (use A) (modus-ponens (use B) (use (B -> C))))))))
+
 (module+ test
   (test-equal? "my-proof proves my-theorem"
                (proof? my-theorem my-proof)
-               #t)
+               #f)
   ; Some additional tests for the proof checker that are provided to you
   ; These are included to illustrate how to write proofs.
 
@@ -122,14 +122,17 @@ should return true.
   is a correct proof of the proposition "prop" given the list of
   assumptions "assmpts".
 |#
+;Issue may be with assmpts -> Fixed: must add p to assmpts
+; Should p be a list? No. Should prop-rest be a list? Yes
+
 (define (proof-helpero prop proof assmpts)
   (fresh (p prop-rest subproof)
-    (== prop (cons p (cons '-> prop-rest)))
-    (== proof (cons 'assume (cons p (list subproof)))) ;Check proof is (assume A subproof), subproof is (use A) (assume A use A) -> (assume A (use A))
+    (== prop (cons p (cons '-> prop-rest))) ;Issue: prop-rest is a list, but for (A -> A), prop-rest wont be A but ratherr '(A). On recursion, checks if prop is (A ->)
+    (== proof (cons 'assume (cons p subproof))) ;Check proof is (assume A subproof), subproof is (use A) (assume A use A) -> (assume A (use A)). Proof can be (Use..) or (Assume ...)
     (conde ((== proof (list 'use p))
            (membero p assmpts))
            ((== proof (list 'assume p subproof))
-            (proof-helpero prop-rest subproof assmpts))
+            (proof-helpero prop-rest subproof (cons p assmpts)))
      )
     )
 )
