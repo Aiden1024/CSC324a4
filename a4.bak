@@ -47,10 +47,10 @@ Copyright: (c) University of Toronto Mississsauga
   or #f is the proof is invalid.
 |#
 (define/match (proof/asmpt proof asmpt)
-  [((list 'use p) asmpt) ; '(use p) _ ; pattern matching
-   (if (member p asmpt) p #f)] ; if p exit in asmpt, e.g (p -> p), (p)
-  [((list 'assume hypo subproof) asmpt) ;'(assume hypo sub) _
-   (list hypo '-> (proof/asmpt subproof (cons hypo asmpt)))] ; return the '(p -> (recursive call))
+  [((list 'use p) asmpt)
+   (if (member p asmpt) p #f)]
+  [((list 'assume hypo subproof) asmpt)
+   (list hypo '-> (proof/asmpt subproof (cons hypo asmpt)))]
   [((list 'modus-ponens subpf1 subpf2) asmpt)
    (let* ([prop2 (proof/asmpt subpf2 asmpt)])
      (match prop2            ; "match" is like "case ... of" in Haskell
@@ -70,12 +70,12 @@ my-theorem: A theorem that you will prove.
 my-proof: A proof for my-theorem: (proof? my-proof my-theorem)
 should return true.
 |#
-(define my-proof '(assume (A -> (B -> C)) (assume B (assume A (modus-ponens (use A) (modus-ponens (use B) (use (B -> C))))))))
+(define my-proof (void))
 
 (module+ test
   (test-equal? "my-proof proves my-theorem"
                (proof? my-theorem my-proof)
-               #f)
+               #t)
   ; Some additional tests for the proof checker that are provided to you
   ; These are included to illustrate how to write proofs.
 
@@ -122,35 +122,9 @@ should return true.
   is a correct proof of the proposition "prop" given the list of
   assumptions "assmpts".
 |#
-
-;Issue may be with assmpts -> Fixed: must add p to assmpts
-; Should p be a list? No. Should prop-rest be a list? Yes
-
 (define (proof-helpero prop proof assmpts)
-  (fresh (hypo prop-rest subproof)
-    (conde ((== proof (list 'use hypo))
-           (membero hypo assmpts))
-           ((== proof (list 'assume hypo subproof))
-            (proof-helpero prop-rest subproof (cons hypo assmpts)))
-     )
-    )
+    (== #t #t) ; TODO REPLACE THIS!
 )
-
-#|
-
-(define (proof-helpero prop proof assmpts)
-  (fresh (hypo prop-rest subproof)
-    (== prop (cons hypo (cons '-> prop-rest))) ;Issue: prop-rest is a list, but for (A -> A), prop-rest wont be A but ratherr '(A). On recursion, checks if prop is (A ->)
-    (== proof (cons 'assume (cons hypo subproof))) ;Check proof is (assume A subproof), subproof is (use A) (assume A use A) -> (assume A (use A)). Proof can be (Use..) or (Assume ...)
-    (conde ((== proof (list 'use hypo))
-           (membero hypo assmpts))
-           ((== proof (list 'assume hypo subproof))
-            (proof-helpero prop-rest subproof (cons hypo assmpts)))
-     )
-    )
-)
-
-|#
 
 #|
 (membero x lst)
@@ -170,9 +144,8 @@ should return true.
 
 
 ; Uncomment these to test your proofo relation
-
 (module+ test
-  (test-equal? "***Example 1 from the handout"
+  (test-equal? "Example 1 from the handout"
                (run 1 (q) (proofo '(A -> A) '(assume A (use A))))
                '(_.0))
   (test-equal? "Example 2 from the handout"
@@ -183,10 +156,8 @@ should return true.
                (run 1 (q) (proofo '(A -> ((A -> B) -> B))
                                   '(assume (A -> B) (assume A (modus-ponens (use A) (use (A -> B)))))))
                '())
-
   ; Write more tests here
 )
-
 
 ;-------------------------------------------------------------------------------
 ; Task 3: A Theorem Prover
