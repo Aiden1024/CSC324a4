@@ -70,12 +70,12 @@ my-theorem: A theorem that you will prove.
 my-proof: A proof for my-theorem: (proof? my-proof my-theorem)
 should return true.
 |#
-(define my-proof '(assume (A -> (B -> C)) (assume B (assume A (modus-ponens (use A) (modus-ponens (use B) (use (B -> C))))))))
+(define my-proof '(assume (A -> (B -> C)) (assume B (assume A (modus-ponens (use B) (modus-ponens (use A)(use (A -> (B -> C)))))))))
 
 (module+ test
   (test-equal? "my-proof proves my-theorem"
                (proof? my-theorem my-proof)
-               #f)
+               #t)
   ; Some additional tests for the proof checker that are provided to you
   ; These are included to illustrate how to write proofs.
 
