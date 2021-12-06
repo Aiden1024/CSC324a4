@@ -146,7 +146,8 @@ should return true.
             (== prop2 (list hypo '-> prop))
             (== prop1 hypo)
             (proof-helpero prop1 sub1 assmpts)
-            (proof-helpero prop2 sub2 assmpts)         
+            (proof-helpero prop2 sub2 assmpts)
+            
             )
      )
     )
@@ -187,7 +188,10 @@ should return true.
   ; Write more tests here
 )
 
-
+(run 1 (q) (proofo q '(assume A (assume (A -> B) (modus-ponens (use A) (use (A -> B)))))))
+(run 1 (q) (proofo '(A -> ((A -> B) -> B)) q))
+(run 1 (q) (proofo '((A -> (B -> C)) -> (B -> (A -> C))) q))
+(run 1 (q) (proofo q '(assume (A -> (B -> C)) (assume B (assume A (modus-ponens (use B) (modus-ponens (use A)(use (A -> (B -> C))))))))))
 #|
 test stuff
 (run 1 (x) (proof-helpero '(A -> A) x '()))
@@ -196,10 +200,6 @@ test stuff
 '((B -> B))
 (run 1 (q) (proofo q '(assume A (assume (A -> B) (modus-ponens (use A) (use (A -> B)))))))
 '((A -> ((A -> B) -> B)))
-(run 1 (q) (proofo q '(assume A (assume (A -> B) (modus-ponens (use A) (use (A -> B)))))))
-(run 1 (q) (proofo '(A -> ((A -> B) -> B)) q))
-(run 1 (q) (proofo '((A -> (B -> C)) -> (B -> (A -> C))) q))
-(run 1 (q) (proofo q '(assume (A -> (B -> C)) (assume B (assume A (modus-ponens (use B) (modus-ponens (use A)(use (A -> (B -> C))))))))))
 |#
 
 ;-------------------------------------------------------------------------------
@@ -214,7 +214,7 @@ test stuff
   this function returns `#f` or may fail to terminate.
 |#
 (define (prove prop)
-  (void))
+  (run 1 (q) (proofo prop q)))
 
 
 ; Uncomment these to test your proofo relation
