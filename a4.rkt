@@ -135,7 +135,7 @@ should return true.
 ;Modus-ponens: hypo in proof is not the same as hypo in prop during recurison
 
 (define (proof-helpero prop proof assmpts)
-  (fresh (hypo prop-rest subproof sub1 sub2)
+  (fresh (hypo prop-rest subproof sub1 sub2 prop1 prop2)
     (conde ((== proof (list 'use hypo)) ; If prop looks a certain way, then membero
            (== prop hypo)
            (membero hypo assmpts))
@@ -143,28 +143,14 @@ should return true.
             (== prop (list hypo '-> prop-rest))
             (proof-helpero prop-rest subproof (cons hypo assmpts)))
            ((== proof (list 'modus-ponens sub1 sub2)) ;What should prop relation be?
-            (proof-helpero prop-rest sub1 assmpts)
-            (proof-helpero prop-rest sub2 assmpts)
+            (proof-helpero prop1 sub1 assmpts)
+            (proof-helpero prop2 sub2 assmpts)
+            (== prop2 (list hypo '-> prop-rest))
+            (== hypo prop1)
             )
      )
     )
 )
-
-#|
-
-(define (proof-helpero prop proof assmpts)
-  (fresh (hypo prop-rest subproof)
-    (== prop (cons hypo (cons '-> prop-rest))) ;Issue: prop-rest is a list, but for (A -> A), prop-rest wont be A but ratherr '(A). On recursion, checks if prop is (A ->)
-    (== proof (cons 'assume (cons hypo subproof))) ;Check proof is (assume A subproof), subproof is (use A) (assume A use A) -> (assume A (use A)). Proof can be (Use..) or (Assume ...)
-    (conde ((== proof (list 'use hypo))
-           (membero hypo assmpts))
-           ((== proof (list 'assume hypo subproof))
-            (proof-helpero prop-rest subproof (cons hypo assmpts)))
-     )
-    )
-)
-
-|#
 
 #|
 (membero x lst)
