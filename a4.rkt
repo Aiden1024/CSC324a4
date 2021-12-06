@@ -191,7 +191,7 @@ should return true.
 #|
 test stuff
 (run 1 (x) (proof-helpero '(A -> A) x '()))
-'((assume _.0 (use _.0)))
+'((assume A (use A)))
 (run 1 (y) (proof-helpero y '(assume B (use B)) '()))
 '((B -> B))
 (run 1 (q) (proofo q '(assume A (assume (A -> B) (modus-ponens (use A) (use (A -> B)))))))
@@ -214,13 +214,25 @@ test stuff
   this function returns `#f` or may fail to terminate.
 |#
 (define (prove prop)
-  (void))
+  (let* ([proof (run 1 (q) (proof-helpero prop q '()))])(if (equal? proof '()) #f (first proof))))
 
 
 ; Uncomment these to test your proofo relation
-#; (module+ test
+(module+ test
   (test-equal? "Example 1 from the handout"
                (prove '(A -> A))
                '(assume A (use A)))
   ; Be careful when you write new tests, since they may be slow
 )
+#|
+Test Cases
+(A -> (B -> A))
+(A -> (B -> B))
+((A -> B) -> ((B -> C) -> (A -> C)))
+(((A -> (B -> C)) -> C) -> ((B -> (A -> C)) -> C))
+)
+(prove '(A -> (B -> A)))
+(prove '(A -> (B -> B)))
+(prove '((A -> B) -> ((B -> C) -> (A -> C))))
+(prove '(((A -> (B -> C)) -> C) -> ((B -> (A -> C)) -> C)))
+|#
